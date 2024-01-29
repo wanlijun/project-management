@@ -1,0 +1,4 @@
+Prisma
+postgres
+
+jwt

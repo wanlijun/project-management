@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String
+  User User[]
+
+  @@map("roles")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now())
+  updateAt  DateTime? @updatedAt
+  username  String    @unique
+  password  String
+
+  role   Role @relation(fields: [roleId], references: [id])
+  roleId Int
+
+  @@map("users")
+}
+
+model Platform {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now())
+  updateAt  DateTime? @updatedAt
+
+  name      String
+  projectId Int?
+}
+
+model Environment {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now())
+  updateAt  DateTime? @updatedAt
+
+  name      String
+  projectId Int?
+}
+
+model Project {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now())
+  updateAt  DateTime? @updatedAt
+
+  // base info
+  name      String
+  shortName String?
+  brief     String?
+
+  environmentIds Int[]
+  platformIds    Int[]
+
+  account Account[]
+
+  FrontEndInfo FrontEndInfo?
+  BackEndInfo  BackEndInfo?
+
+  @@map("projects")
+}
+
+model Account {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now())
+  updateAt  DateTime? @updatedAt
+
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId Int
+
+  environmentId Int
+  platformId    Int
+
+  url     String
+  account String[]
+}
+
+model FrontEndInfo {
+  id          Int     @id @default(autoincrement())
+  gitGroupUrl String?
+  gitUrl      Json?
+  deploy      Json?
+  notes       String?
+
+  Project   Project @relation(fields: [projectId], references: [id])
+  projectId Int     @unique
+}
+
+model BackEndInfo {
+  id          Int     @id @default(autoincrement())
+  gitGroupUrl String?
+  gitUrl      Json?
+  deploy      Json?
+  notes       String?
+
+  Project   Project @relation(fields: [projectId], references: [id])
+  projectId Int     @unique
+}
