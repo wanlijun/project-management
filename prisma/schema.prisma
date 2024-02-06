@@ -64,8 +64,8 @@ model Project {
 
   account Account[]
 
-  FrontEndInfo FrontEndInfo?
-  BackEndInfo  BackEndInfo?
+  frontEndInfo FrontEndInfo?
+  backEndInfo  BackEndInfo?
 
   @@map("projects")
 }

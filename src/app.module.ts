@@ -1,3 +1,5 @@
+import { PlatformModule } from './platform/platform.module';
+import { EnvironmentModule } from './environment/environment.module';
 import { RoleModule } from './role/role.module';
 import { ProjectModule } from './project/project.module';
 import { UserModule } from './user/user.module';
@@ -12,6 +14,8 @@ import { JwtAuthGuard } from './auth/auth.guard';
 
 @Module({
   imports: [
+    PlatformModule,
+    EnvironmentModule,
     RoleModule,
     ProjectModule,
     UserModule,

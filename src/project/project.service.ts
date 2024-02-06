@@ -60,13 +60,32 @@ export class ProjectService {
     });
   }
   completeProject(id: number, params: CompleteProjectDto) {
-    const { platform = [], ...remain } = params;
+    const { account = [], frontEndInfo, ...remain } = params;
+    console.log(frontEndInfo, '======>');
+    const { id: frontId, ...frontInfo } = frontEndInfo;
     return this.prismaService.project.update({
       where: {
         id: id,
       },
       data: {
         ...remain,
+        account: {
+          upsert: account.map((item) => {
+            const { id, ...accountInfo } = item;
+            return {
+              where: { id: id || -2 },
+              update: accountInfo,
+              create: accountInfo,
+            };
+          }),
+        },
+        frontEndInfo: {
+          upsert: {
+            where: { id: frontId || -2 },
+            update: frontInfo,
+            create: frontInfo,
+          },
+        },
       },
     });
   }

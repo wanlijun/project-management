@@ -5,6 +5,8 @@ import { Test } from '@nestjs/testing';
 import * as pactum from 'pactum';
 import { AppModule } from 'src/app.module';
 import { AuthDto } from 'src/auth/dto/auth.dto';
+import { AddEnvDto } from 'src/environment/dto';
+import { AddPlatformDto } from 'src/platform/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   // CompleteProjectDto,
@@ -68,22 +70,37 @@ describe('App test', () => {
     describe('modify user', () => {});
   });
   describe('environment', () => {
-    const dto: ModifyProjectDto = {
-      name: '渝商E服',
+    const dto: AddEnvDto = {
+      name: '测试',
     };
     it('should add environment ', () => {
       return pactum
         .spec()
-        .post('/api/environment')
+        .post('/api/env')
         .withHeaders({
           Authorization: 'Bearer $S{userAt}',
         })
         .withBody(dto)
-        .expectStatus(200);
+        .expectStatus(201)
+        .stores('environmentId', 'id');
     });
   });
   describe('platform', () => {
     describe('should crate a platform', () => {});
+    const dto: AddPlatformDto = {
+      name: '前台',
+    };
+    it('should add platform ', () => {
+      return pactum
+        .spec()
+        .post('/api/platform')
+        .withHeaders({
+          Authorization: 'Bearer $S{userAt}',
+        })
+        .withBody(dto)
+        .expectStatus(201)
+        .stores('platformId', 'id');
+    });
   });
   describe('project', () => {
     describe('create project', () => {
@@ -101,8 +118,7 @@ describe('App test', () => {
           .withBody(dto)
           .expectStatus(201)
           .expectBodyContains(dto.name)
-          .stores('projectId', 'id')
-          .inspect();
+          .stores('projectId', 'id');
       });
     });
     describe('modify project', () => {
@@ -120,8 +136,7 @@ describe('App test', () => {
           })
           .withBody(dto)
           .expectStatus(200)
-          .expectBodyContains(dto.name)
-          .inspect();
+          .expectBodyContains(dto.name);
       });
     });
     describe('complete project info', () => {
@@ -176,42 +191,67 @@ describe('App test', () => {
             Authorization: 'Bearer $S{userAt}',
           })
           .expectBodyContains('$S{projectId}')
-          .expectStatus(200)
-          .stores('platformId', 'platform.[0].id')
-          .inspect();
+          .expectStatus(200);
       });
     });
     describe('complete project info', () => {
-      // const dto = {
-      //   name: '渝商E服',
-      //   shortName: '市统战',
-      //   platform: [
-      //     {
-      //       name: '后台',
-      //       id: '$S{platformId}',
-      //       environments: [
-      //         {
-      //           name: '测试环境',
-      //           account: ['19999999999/111111'],
-      //           url: 'http://baidu.com',
-      //         },
-      //       ],
-      //     },
-      //   ],
-      // };
-      // it('update platform info', () => {
-      //   return pactum
-      //     .spec()
-      //     .put('/api/project/complete/{id}')
-      //     .withPathParams('id', '$S{projectId}')
-      //     .withHeaders({
-      //       Authorization: 'Bearer $S{userAt}',
-      //     })
-      //     .withBody(dto)
-      //     .expectStatus(200)
-      //     .expectBodyContains(dto.name)
-      //     .inspect();
-      // });
+      const dto = {
+        name: '渝商E服',
+        shortName: '市统战',
+        brief: '渝商E服的别名是市统战',
+        environmentIds: ['$S{environmentId}'],
+        platformIds: ['$S{platformId}'],
+        account: [
+          {
+            projectId: '$S{projectId}',
+            environmentId: '$S{environmentId}',
+            platformId: '$S{platformId}',
+            url: 'http://baiduc.com',
+            account: ['199999999/11111', '188888888/111111'],
+          },
+        ],
+        frontEndInfo: {
+          notes: '前端相关信息',
+          gitUrl: [
+            {
+              name: 'h5',
+              url: 'http://baidu.com',
+            },
+            {
+              name: 'pc',
+              url: 'http://baidu.com',
+            },
+          ],
+          deploy: [
+            {
+              environment: '$S{environmentId}',
+              data: [
+                {
+                  name: 'h5',
+                  method: '合并到test',
+                },
+                {
+                  name: 'pc',
+                  method: '合并到test',
+                },
+              ],
+            },
+          ],
+        },
+      };
+      it('update platform info', () => {
+        return pactum
+          .spec()
+          .put('/api/project/complete/{id}')
+          .withPathParams('id', '$S{projectId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .withBody(dto)
+          .expectStatus(200)
+          .expectBodyContains(dto.name)
+          .inspect();
+      });
     });
     // describe('delete project by id', () => {
     //   it('delete project by id', () => {
