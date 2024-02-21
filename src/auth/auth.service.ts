@@ -20,7 +20,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService,
-  ) {}
+  ) { }
   async login(params: AuthDto) {
     // find the user
     const user = await this.prisma.user.findUnique({
@@ -29,14 +29,13 @@ export class AuthService {
       },
     });
     if (!user) {
-      throw new ForbiddenException('账号或密码错误1');
+      throw new ForbiddenException('账号或密码错误');
     }
     // compare password
     const pwMatches = await argon.verify(user.password, params.password);
     if (!pwMatches) {
       throw new ForbiddenException('账号或密码错误');
     }
-    console.log(params);
     return this.signToken(user.id, user.username);
   }
   async register(params: CreateUserDto) {
@@ -73,11 +72,14 @@ export class AuthService {
     };
     const secret = this.config.get('JWT_SECRET');
     const token = await this.jwt.signAsync(payload, {
-      expiresIn: '15min',
+      expiresIn: '30min',
       secret: secret,
     });
     return {
-      access_token: token,
+      token,
+      userId: userId,
+      username: username,
     };
   }
+
 }

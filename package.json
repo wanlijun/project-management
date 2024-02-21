@@ -5,21 +5,22 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
-   "prisma": {
-      "seed": "ts-node prisma/seed.ts"
-    },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "scripts": {
     "db:dev:rm": "docker compose rm dev-db -s -f -v",
     "db:dev:up": "docker compose up dev-db -d",
     "prisma:dev:deploy": "prisma migrate deploy",
-    "db:dev:restart": "yarn db:dev:rm && yarn db:dev:up && sleep 1 && yarn prisma:dev:deploy",
+    "db:dev:restart": "yarn db:dev:rm && yarn db:dev:up  && yarn prisma:dev:deploy",
     "db:test:rm": "docker compose rm test-db -s -f -v",
     "db:test:up": "docker compose up test-db -d",
     "prisma:test:deploy": "dotenv -e .env.test -- prisma migrate deploy",
-    "db:test:restart": "yarn db:test:rm && yarn db:test:up && sleep 1 && yarn prisma:test:deploy",
+    "db:test:restart": "yarn db:test:rm && yarn db:test:up && yarn prisma:test:deploy",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
+    "prestart:dev": "npm run db:dev:restart",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -45,6 +46,7 @@
     "argon2": "^0.31.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "cookie-parse": "^0.4.0",
     "pactum": "^3.5.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",

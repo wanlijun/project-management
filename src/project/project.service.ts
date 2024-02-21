@@ -13,7 +13,7 @@ import {
 
 @Injectable()
 export class ProjectService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private prismaService: PrismaService) { }
   async createProject(params: CreateProjectDto) {
     const project = await this.prismaService.project.create({
       data: {
@@ -29,8 +29,10 @@ export class ProjectService {
       skip: skip,
       take: size,
     });
+    const count = await this.prismaService.project.count();
     return {
-      data,
+      content: data,
+      total: count,
     };
   }
 

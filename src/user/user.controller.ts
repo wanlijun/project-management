@@ -10,6 +10,7 @@ import { GetUser } from 'src/auth/decorator';
 export class UserController {
   @Get('info')
   getUser(@GetUser() user: User) {
+    console.log(user);
     return user;
   }
 }

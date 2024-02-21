@@ -1,10 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
+import * as argon from 'argon2';
 async function main() {
+  const hash = await argon.hash('1qaz2wsx');
   const user = await prisma.user.create({
     data: {
       username: 'lijun.wan',
-      password: '1qaz2wsx',
+      password: hash,
       role: {
         create: {
           name: '超级管理员',
