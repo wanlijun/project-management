@@ -15,4 +15,7 @@ export class EnvironmentService {
       data: params,
     });
   }
+  getEnvironments() {
+    return this.prismaService.environment.findMany();
+  }
 }

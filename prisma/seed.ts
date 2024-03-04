@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 import * as argon from 'argon2';
 async function main() {
   const hash = await argon.hash('1qaz2wsx');
-  const user = await prisma.user.create({
+  await prisma.user.create({
     data: {
       username: 'lijun.wan',
       password: hash,
@@ -14,7 +14,40 @@ async function main() {
       },
     },
   });
-  return user;
+  // 创建内置的环境
+  await prisma.environment.createMany({
+    data: [
+      {
+        name: '测试',
+      },
+      {
+        name: '预发布',
+      },
+      {
+        name: '正式',
+      },
+      {
+        name: '演示',
+      },
+    ],
+  });
+  // 创建内置的平台
+  await prisma.platform.createMany({
+    data: [
+      {
+        name: 'H5',
+      },
+      {
+        name: 'PC前台',
+      },
+      {
+        name: '后台',
+      },
+      {
+        name: '大屏',
+      },
+    ],
+  });
 }
 main()
   .then(async () => {

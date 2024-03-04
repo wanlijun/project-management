@@ -14,7 +14,7 @@
     "prisma:dev:deploy": "prisma migrate deploy",
     "db:dev:restart": "yarn db:dev:rm && yarn db:dev:up  && yarn prisma:dev:deploy",
     "db:test:rm": "docker compose rm test-db -s -f -v",
-    "db:test:up": "docker compose up test-db -d",
+    "db:test:up": "docker composep test-db -d",
     "prisma:test:deploy": "dotenv -e .env.test -- prisma migrate deploy",
     "db:test:restart": "yarn db:test:rm && yarn db:test:up && yarn prisma:test:deploy",
     "build": "nest build",

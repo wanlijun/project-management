@@ -59,6 +59,10 @@ export class Account {
   @IsNumber()
   id?: number;
 
+  @IsOptional()
+  @IsNumber()
+  projectId: number;
+
   @IsNumber()
   environmentId: number;
 

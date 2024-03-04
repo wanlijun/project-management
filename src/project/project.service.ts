@@ -13,7 +13,7 @@ import {
 
 @Injectable()
 export class ProjectService {
-  constructor(private prismaService: PrismaService) { }
+  constructor(private prismaService: PrismaService) {}
   async createProject(params: CreateProjectDto) {
     const project = await this.prismaService.project.create({
       data: {
@@ -41,6 +41,25 @@ export class ProjectService {
       where: {
         id,
       },
+      include: {
+        account: {
+          select: {
+            id: true,
+            environmentId: true,
+            platformId: true,
+            url: true,
+            account: true,
+          },
+        },
+        frontEndInfo: {
+          select: {
+            id: true,
+            deploy: true,
+            notes: true,
+            gitUrl: true,
+          },
+        },
+      },
     });
   }
 
@@ -63,8 +82,9 @@ export class ProjectService {
   }
   completeProject(id: number, params: CompleteProjectDto) {
     const { account = [], frontEndInfo, ...remain } = params;
-    console.log(frontEndInfo, '======>');
+    console.log(id, '======>');
     const { id: frontId, ...frontInfo } = frontEndInfo;
+    console.log(params, '======>???????');
     return this.prismaService.project.update({
       where: {
         id: id,
@@ -73,9 +93,9 @@ export class ProjectService {
         ...remain,
         account: {
           upsert: account.map((item) => {
-            const { id, ...accountInfo } = item;
+            const { id: accountId, ...accountInfo } = item;
             return {
-              where: { id: id || -2 },
+              where: { id: accountId || -2 },
               update: accountInfo,
               create: accountInfo,
             };

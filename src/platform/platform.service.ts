@@ -14,4 +14,7 @@ export class PlatformService {
       data: params,
     });
   }
+  getPlatform() {
+    return this.prismaService.platform.findMany();
+  }
 }

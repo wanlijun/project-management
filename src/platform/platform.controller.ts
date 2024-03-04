@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Get } from '@nestjs/common';
 import { AddPlatformDto } from './dto';
 import { PlatformService } from './platform.service';
 
@@ -12,5 +12,9 @@ export class PlatformController {
   @Post('/platform')
   addPlatform(@Body() params: AddPlatformDto) {
     return this.platformService.addPlatform(params);
+  }
+  @Get('/platform')
+  getPlatform() {
+    return this.platformService.getPlatform();
   }
 }
